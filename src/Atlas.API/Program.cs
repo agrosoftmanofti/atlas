@@ -6,6 +6,7 @@ using Atlas.Core.Models;
 using Atlas.Core.Validation.Extensions;
 using Atlas.Data.Access.EF.Context;
 using Atlas.Data.Access.EF.Data;
+using Atlas.Data.Access.ABP;
 using Atlas.Data.Access.Interfaces;
 using Atlas.Logging.Interfaces;
 using Atlas.Logging.Serilog.Services;
@@ -14,6 +15,8 @@ using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Sinks.MSSqlServer;
 using System.Data;
@@ -27,8 +30,8 @@ builder.Configuration
     .AddEnvironmentVariables();
 
 string? connectionString = builder.Configuration.GetConnectionString(Config.CONNECTION_STRING) ?? throw new NullReferenceException(Config.CONNECTION_STRING);
-string? domain = builder.Configuration[Config.AUTH_DOMAIN] ?? throw new NullReferenceException(Config.AUTH_DOMAIN);
-string? audience = builder.Configuration[Config.AUTH_AUDIENCE] ?? throw new NullReferenceException(Config.AUTH_AUDIENCE);
+string? authority = builder.Configuration[Config.OIDC_AUTHORITY] ?? throw new NullReferenceException(Config.OIDC_AUTHORITY);
+string? audience = builder.Configuration[Config.OIDC_AUDIENCE] ?? throw new NullReferenceException(Config.OIDC_AUDIENCE);
 string? corsPolicy = builder.Configuration[Config.CORS_POLICY] ?? throw new NullReferenceException(Config.CORS_POLICY);
 string? originUrls = builder.Configuration[Config.ORIGINS_URLS] ?? throw new NullReferenceException(Config.ORIGINS_URLS);
 bool databaseMigrate = bool.Parse(builder.Configuration[Config.DATABASE_MIGRATION] ?? "false");
@@ -66,6 +69,11 @@ builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
                           new SqlColumn {ColumnName = "Context", PropertyName = "Context", DataType = SqlDbType.NVarChar, DataLength = 450},
                       ]
                   }));
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+{
+    containerBuilder.RegisterModule(new Atlas.AbpModules.AtlasAbpModule());
+});
 
 builder.Services.AddAtlasValidators();
 
@@ -109,16 +117,16 @@ builder.Services.AddScoped<IDeveloperData, DeveloperData>();
 builder.Services.AddScoped<ISupportData, SupportData>();
 builder.Services.AddScoped<IOptionsData, OptionsData>();
 builder.Services.AddScoped<IApplicationData, ApplicationData>();
-builder.Services.AddScoped<IAdministrationData, AdministrationData>();
+builder.Services.AddScoped<IAdministrationData, Atlas.Data.Access.ABP.AbpAdministrationData>();
 builder.Services.AddScoped<IUserAuthorisationData, UserAuthorisationData>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = $"https://{domain}";
+        options.Authority = authority;
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidIssuer = domain,
+            ValidIssuer = authority,
             ValidAudience = audience
         };
     });

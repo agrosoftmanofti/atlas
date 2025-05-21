@@ -25,6 +25,7 @@
     <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="8.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.1.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,8 +34,10 @@
     <ProjectReference Include="..\Atlas.Core.Validation\Atlas.Core.Validation.csproj" />
     <ProjectReference Include="..\Atlas.Core\Atlas.Core.csproj" />
     <ProjectReference Include="..\Atlas.Data.Access.EF\Atlas.Data.Access.EF.csproj" />
+    <ProjectReference Include="..\Atlas.Data.Access.ABP\Atlas.Data.Access.ABP.csproj" />
     <ProjectReference Include="..\Atlas.Logging.Serilog\Atlas.Logging.Serilog.csproj" />
     <ProjectReference Include="..\Atlas.Logging\Atlas.Logging.csproj" />
+    <ProjectReference Include="..\Atlas.AbpModules\Atlas.AbpModules.csproj" />
   </ItemGroup>
 
   <ItemGroup>
