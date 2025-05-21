@@ -39,6 +39,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atlas.Logging", "src\Atlas.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atlas.Logging.Serilog", "src\Atlas.Logging.Serilog\Atlas.Logging.Serilog.csproj", "{8CE1F8A2-40D3-45CC-9B2D-DC526394A8E4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.Data.Access.ABP", "src\Atlas.Data.Access.ABP\Atlas.Data.Access.ABP.csproj", "{F6E65137-1DAA-4F32-9AE0-9B0EA1EADA76}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atlas.AbpModules", "src\Atlas.AbpModules\Atlas.AbpModules.csproj", "{34263AAC-3EC5-47AA-BDB8-06889B1A67BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,8 +108,16 @@ Global
 		{8CE1F8A2-40D3-45CC-9B2D-DC526394A8E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8CE1F8A2-40D3-45CC-9B2D-DC526394A8E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CE1F8A2-40D3-45CC-9B2D-DC526394A8E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8CE1F8A2-40D3-45CC-9B2D-DC526394A8E4}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
+                {8CE1F8A2-40D3-45CC-9B2D-DC526394A8E4}.Release|Any CPU.Build.0 = Release|Any CPU
+                {34263AAC-3EC5-47AA-BDB8-06889B1A67BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+                {34263AAC-3EC5-47AA-BDB8-06889B1A67BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+                {34263AAC-3EC5-47AA-BDB8-06889B1A67BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+                {34263AAC-3EC5-47AA-BDB8-06889B1A67BB}.Release|Any CPU.Build.0 = Release|Any CPU
+                {F6E65137-1DAA-4F32-9AE0-9B0EA1EADA76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+                {F6E65137-1DAA-4F32-9AE0-9B0EA1EADA76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+                {F6E65137-1DAA-4F32-9AE0-9B0EA1EADA76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+                {F6E65137-1DAA-4F32-9AE0-9B0EA1EADA76}.Release|Any CPU.Build.0 = Release|Any CPU
+        EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
@@ -124,8 +136,10 @@ Global
 		{5B96B25D-0228-4D3E-8EE1-D1D9036796E7} = {4D561DB1-6F2C-4895-88D3-91379F9CFEE6}
 		{25952631-4DAD-49A7-B4C7-F819F13CC555} = {4D561DB1-6F2C-4895-88D3-91379F9CFEE6}
 		{C6680503-010B-4AC1-BB2C-D8856E325168} = {4D561DB1-6F2C-4895-88D3-91379F9CFEE6}
-		{8CE1F8A2-40D3-45CC-9B2D-DC526394A8E4} = {4D561DB1-6F2C-4895-88D3-91379F9CFEE6}
-	EndGlobalSection
+                {8CE1F8A2-40D3-45CC-9B2D-DC526394A8E4} = {4D561DB1-6F2C-4895-88D3-91379F9CFEE6}
+                {34263AAC-3EC5-47AA-BDB8-06889B1A67BB} = {4D561DB1-6F2C-4895-88D3-91379F9CFEE6}
+                {F6E65137-1DAA-4F32-9AE0-9B0EA1EADA76} = {4D561DB1-6F2C-4895-88D3-91379F9CFEE6}
+        EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {35D4493E-72A3-403D-AB40-7AADFBC20D09}
 	EndGlobalSection

@@ -12,9 +12,11 @@
     <ProjectReference Include="..\Atlas.Core.Validation\Atlas.Core.Validation.csproj" />
     <ProjectReference Include="..\Atlas.Core\Atlas.Core.csproj" />
     <ProjectReference Include="..\Atlas.Logging.Serilog\Atlas.Logging.Serilog.csproj" />
-    <ProjectReference Include="..\Atlas.Logging\Atlas.Logging.csproj" />	  
-    <ProjectReference Include="..\Atlas.Requests\Atlas.Requests.csproj" />	  
-    <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.4.1" />
+    <ProjectReference Include="..\Atlas.Logging\Atlas.Logging.csproj" />
+    <ProjectReference Include="..\Atlas.Data.Access.ABP\Atlas.Data.Access.ABP.csproj" />
+    <ProjectReference Include="..\Atlas.AbpModules\Atlas.AbpModules.csproj" />
+    <ProjectReference Include="..\Atlas.Requests\Atlas.Requests.csproj" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.10.4" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.10.4" />

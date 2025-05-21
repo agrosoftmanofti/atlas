@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="7.0.0" />
+    <!-- Placeholder for ABP package references -->
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Atlas.Core\Atlas.Core.csproj" />
+    <ProjectReference Include="..\Atlas.Logging\Atlas.Logging.csproj" />
+    <ProjectReference Include="..\Atlas.Data.Access\Atlas.Data.Access.csproj" />
+  </ItemGroup>
+</Project>

@@ -9,7 +9,9 @@ using Atlas.Logging.Interfaces;
 using Atlas.Logging.Serilog.Services;
 using Atlas.Requests.API;
 using Atlas.Requests.Interfaces;
-using Auth0.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.FluentUI.AspNetCore.Components;
@@ -26,10 +28,10 @@ builder.Configuration
 
 string? atlasApi = Config.ATLAS_API;
 string? connectionString = builder.Configuration.GetConnectionString(Config.CONNECTION_STRING) ?? throw new NullReferenceException(Config.CONNECTION_STRING);
-string? domain = builder.Configuration[Config.AUTH_DOMAIN] ?? throw new NullReferenceException(Config.AUTH_DOMAIN);
-string? audience = builder.Configuration[Config.AUTH_AUDIENCE] ?? throw new NullReferenceException(Config.AUTH_AUDIENCE);
-string? clientId = builder.Configuration[Config.AUTH_CLIENT_ID] ?? throw new NullReferenceException(Config.AUTH_CLIENT_ID);
-string? clientSecret = builder.Configuration[Config.AUTH_CLIENT_SECRET] ?? throw new NullReferenceException(Config.AUTH_CLIENT_SECRET);
+string? authority = builder.Configuration[Config.OIDC_AUTHORITY] ?? throw new NullReferenceException(Config.OIDC_AUTHORITY);
+string? audience = builder.Configuration[Config.OIDC_AUDIENCE] ?? throw new NullReferenceException(Config.OIDC_AUDIENCE);
+string? clientId = builder.Configuration[Config.OIDC_CLIENT_ID] ?? throw new NullReferenceException(Config.OIDC_CLIENT_ID);
+string? clientSecret = builder.Configuration[Config.OIDC_CLIENT_SECRET] ?? throw new NullReferenceException(Config.OIDC_CLIENT_SECRET);
 
 builder.Logging.ClearProviders();
 
@@ -52,6 +54,11 @@ builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
                           new SqlColumn {ColumnName = "Context", PropertyName = "Context", DataType = SqlDbType.NVarChar, DataLength = 450},
                       ]
                   }));
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+{
+    containerBuilder.RegisterModule(new Atlas.AbpModules.AtlasAbpModule());
+});
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
@@ -63,15 +70,19 @@ builder.Services.AddFluentUIComponents(new LibraryConfiguration { UseTooltipServ
 builder.Services.AddAtlasValidators();
 
 builder.Services
-    .AddAuth0WebAppAuthentication(Auth0Constants.AuthenticationScheme, options =>
+    .AddAuthentication(options =>
     {
-        options.Domain = domain;
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+    })
+    .AddCookie()
+    .AddOpenIdConnect(options =>
+    {
+        options.Authority = authority;
         options.ClientId = clientId;
         options.ClientSecret = clientSecret;
         options.ResponseType = "code";
-    }).WithAccessToken(options =>
-    {
-        options.Audience = audience;
+        options.SaveTokens = true;
     });
 
 builder.Services.AddCascadingAuthenticationState();
