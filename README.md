@@ -1,6 +1,6 @@
 ![Alt text](/readme-images/Atlas.png?raw=true "Atlas") 
 
-###### .NET 9.0, Blazor, ASP.NET Core Web API, Azure, Auth0, FluentUI, FluentValidation, Backend for Frontend (BFF), Entity Framework Core, MS SQL Server, SQLite
+###### .NET 9.0, Blazor, ASP.NET Core Web API, Azure, ABP Framework (OpenIddict), FluentUI, FluentValidation, Backend for Frontend (BFF), Entity Framework Core, MS SQL Server, SQLite
 
 A .NET 9.0 Blazor framework for hosting and building Blazor applications using the Backend for Frontend (BFF) pattern. It comes with authentication, authorisation, change tracking, and persisting structured logs to the database. Follow the instructions for publishing to Azure.
 
@@ -42,13 +42,15 @@ See the [Worked Examples](#worked-examples) for step-by-step guidance on how to 
     * [Update Web API Configuration and Publish to Azure](#update-web-api-configuration-and-publish-to-azure)
     * [Update Blazor Web App Configuration and Publish to Azure](#update-blazor-web-app-configuration-and-publish-to-azure)
 * [Worked Examples](#worked-examples)
-    * [Blazor Template](#blazor-template) 
+    * [Blazor Template](#blazor-template)
 * [Notes](#notes)
     * [FluentDesignTheme Dark/Light](#fluentdesigntheme-darklight)
     * [Backend for frontend](#backend-for-frontend)
+* [ABP Module Integration](#abp-module-integration)
 
 # Setup the Solution
 
+Install the .NET 9 SDK by running `./utility/install-dotnet-sdk.sh` or open the repository in the provided dev container.
 ### Multiple Startup Projects
 In the _Solution Properties_, specify multiple startup projects and set the action for both **Atlas.API** Web API and **Atlas.Blazor.Web.App** Blazor application, to *Start*.
 
@@ -946,4 +948,12 @@ For the Blazor WebAssembly stand alone project, add the reference to the `index.
 - [Backend for Frontend (BFF)](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-browser-based-apps#name-backend-for-frontend-bff)
 - [Microsoft Architecture Patterns - Backends for Frontends](https://learn.microsoft.com/en-us/azure/architecture/patterns/backends-for-frontends)
 
+# ABP Module Integration
+The `Atlas.Integration.ABP` project decouples the Blazor core from the ABP Framework. 
+Interfaces such as `IUserService` are defined in the core and implemented in the integration layer. 
+Register the integration layer in `Program.cs` with `services.AddAbpIntegration(configuration)` and configure the `RemoteServices:Default` URL to point to the ABP Auth Server.
+New ABP modules can be added by referencing their `HttpApi.Client` package and registering `AddHttpClientProxies` for the module assembly inside the integration project.
 
+
+
+For a ready-to-use environment with the SDK preinstalled, open the repository in the provided dev container configuration.

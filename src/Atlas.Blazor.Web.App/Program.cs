@@ -9,9 +9,10 @@ using Atlas.Logging.Interfaces;
 using Atlas.Logging.Serilog.Services;
 using Atlas.Requests.API;
 using Atlas.Requests.Interfaces;
-using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Atlas.Integration.ABP.Extensions;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Serilog;
 using Serilog.Sinks.MSSqlServer;
@@ -26,10 +27,9 @@ builder.Configuration
 
 string? atlasApi = Config.ATLAS_API;
 string? connectionString = builder.Configuration.GetConnectionString(Config.CONNECTION_STRING) ?? throw new NullReferenceException(Config.CONNECTION_STRING);
-string? domain = builder.Configuration[Config.AUTH_DOMAIN] ?? throw new NullReferenceException(Config.AUTH_DOMAIN);
-string? audience = builder.Configuration[Config.AUTH_AUDIENCE] ?? throw new NullReferenceException(Config.AUTH_AUDIENCE);
-string? clientId = builder.Configuration[Config.AUTH_CLIENT_ID] ?? throw new NullReferenceException(Config.AUTH_CLIENT_ID);
-string? clientSecret = builder.Configuration[Config.AUTH_CLIENT_SECRET] ?? throw new NullReferenceException(Config.AUTH_CLIENT_SECRET);
+string? authority = builder.Configuration[Config.AUTH_SERVER_AUTHORITY] ?? throw new NullReferenceException(Config.AUTH_SERVER_AUTHORITY);
+string? clientId = builder.Configuration[Config.AUTH_SERVER_CLIENT_ID] ?? throw new NullReferenceException(Config.AUTH_SERVER_CLIENT_ID);
+string? clientSecret = builder.Configuration[Config.AUTH_SERVER_CLIENT_SECRET] ?? throw new NullReferenceException(Config.AUTH_SERVER_CLIENT_SECRET);
 
 builder.Logging.ClearProviders();
 
@@ -63,20 +63,26 @@ builder.Services.AddFluentUIComponents(new LibraryConfiguration { UseTooltipServ
 builder.Services.AddAtlasValidators();
 
 builder.Services
-    .AddAuth0WebAppAuthentication(Auth0Constants.AuthenticationScheme, options =>
+    .AddAuthentication(options =>
     {
-        options.Domain = domain;
-        options.ClientId = clientId;
-        options.ClientSecret = clientSecret;
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+    })
+    .AddCookie()
+    .AddOpenIdConnect(options =>
+    {
+        options.Authority = authority!;
+        options.ClientId = clientId!;
+        options.ClientSecret = clientSecret!;
         options.ResponseType = "code";
-    }).WithAccessToken(options =>
-    {
-        options.Audience = audience;
+        options.SaveTokens = true;
     });
+
+builder.Services.AddAbpIntegration(builder.Configuration);
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<TokenHandler>();
+builder.Services.AddScoped<BearerTokenHandler>();
 
 builder.Services.AddSingleton<IAtlasRoutesService, AtlasRoutesService>();
 builder.Services.AddScoped<ILogService, LogService>();
@@ -85,7 +91,7 @@ builder.Services.AddScoped<IOptionsService, OptionsService>();
 
 builder.Services.AddHttpClient(atlasApi,
       client => client.BaseAddress = new Uri(builder.Configuration[atlasApi] ?? throw new NullReferenceException(atlasApi)))
-      .AddHttpMessageHandler<TokenHandler>();
+      .AddHttpMessageHandler<BearerTokenHandler>();
 
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
   .CreateClient(atlasApi));
@@ -139,20 +145,22 @@ app.UseAntiforgery();
 
 app.MapGet("login", async (HttpContext httpContext, string redirectUri = @"/") =>
 {
-    AuthenticationProperties authenticationProperties = new LoginAuthenticationPropertiesBuilder()
-            .WithRedirectUri(redirectUri)
-            .Build();
+    AuthenticationProperties authenticationProperties = new()
+    {
+        RedirectUri = redirectUri
+    };
 
-    await httpContext.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
+    await httpContext.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme, authenticationProperties);
 });
 
 app.MapGet("logout", async (HttpContext httpContext, string redirectUri = @"/") =>
 {
-    AuthenticationProperties authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
-            .WithRedirectUri(redirectUri)
-            .Build();
+    AuthenticationProperties authenticationProperties = new()
+    {
+        RedirectUri = redirectUri
+    };
 
-    await httpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
+    await httpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme, authenticationProperties);
     await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 });
 
