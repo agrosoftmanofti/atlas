@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atlas.Logging", "src\Atlas.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atlas.Logging.Serilog", "src\Atlas.Logging.Serilog\Atlas.Logging.Serilog.csproj", "{8CE1F8A2-40D3-45CC-9B2D-DC526394A8E4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.Integration.ABP", "src\Atlas.Integration.ABP\Atlas.Integration.ABP.csproj", "{E2C7DFB5-1234-4D5B-9C36-ABCDEF123456}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

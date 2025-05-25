@@ -27,8 +27,8 @@ builder.Configuration
     .AddEnvironmentVariables();
 
 string? connectionString = builder.Configuration.GetConnectionString(Config.CONNECTION_STRING) ?? throw new NullReferenceException(Config.CONNECTION_STRING);
-string? domain = builder.Configuration[Config.AUTH_DOMAIN] ?? throw new NullReferenceException(Config.AUTH_DOMAIN);
-string? audience = builder.Configuration[Config.AUTH_AUDIENCE] ?? throw new NullReferenceException(Config.AUTH_AUDIENCE);
+string? authority = builder.Configuration[Config.AUTH_SERVER_AUTHORITY] ?? throw new NullReferenceException(Config.AUTH_SERVER_AUTHORITY);
+string? audience = builder.Configuration[Config.AUTH_SERVER_CLIENT_ID] ?? throw new NullReferenceException(Config.AUTH_SERVER_CLIENT_ID);
 string? corsPolicy = builder.Configuration[Config.CORS_POLICY] ?? throw new NullReferenceException(Config.CORS_POLICY);
 string? originUrls = builder.Configuration[Config.ORIGINS_URLS] ?? throw new NullReferenceException(Config.ORIGINS_URLS);
 bool databaseMigrate = bool.Parse(builder.Configuration[Config.DATABASE_MIGRATION] ?? "false");
@@ -115,10 +115,10 @@ builder.Services.AddScoped<IUserAuthorisationData, UserAuthorisationData>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = $"https://{domain}";
+        options.Authority = authority;
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidIssuer = domain,
+            ValidIssuer = authority,
             ValidAudience = audience
         };
     });

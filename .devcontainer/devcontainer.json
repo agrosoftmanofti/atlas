@@ -1,0 +1,5 @@
+{
+  "name": "Atlas Dev Container",
+  "image": "mcr.microsoft.com/dotnet/sdk:9.0",
+  "postCreateCommand": "./utility/install-dotnet-sdk.sh || true"
+}
