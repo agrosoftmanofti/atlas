@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace Atlas.Core.Interfaces
 {
     public interface ITokenProvider
